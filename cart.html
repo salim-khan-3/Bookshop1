@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - BookHaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-gray-100 to-gray-300 font-sans">
+    <!-- Header -->
+    <header class="bg-blue-700 text-white p-4 sticky top-0 z-20 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold tracking-tight">BookHaven</h1>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="hover:text-blue-200 transition">Home</a>
+                <a href="index.html#books" class="hover:text-blue-200 transition">Books</a>
+                <a href="#" class="hover:text-blue-200 transition">Categories</a>
+                <a href="#" class="hover:text-blue-200 transition">About</a>
+            </nav>
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="p-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cart Section -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8">Your Cart</h2>
+            <div id="cart-items" class="space-y-4"></div>
+            <p id="cart-total" class="text-base sm:text-lg font-semibold mt-6 text-right">Total: $0.00</p>
+            <div class="flex justify-end space-x-4 mt-6">
+                <a href="index.html" class="bg-blue-600 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg hover:bg-blue-700 text-sm sm:text-base">Continue Shopping</a>
+                <button id="clear-cart" class="bg-red-600 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg hover:bg-red-700 text-sm sm:text-base">Clear Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-700 text-white py-8">
+        <div class="container mx-auto text-center px-4">
+            <p>&copy; 2025 BookHaven. All rights reserved.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-blue-200 transition text-sm sm:text-base">Privacy Policy</a>
+                <a href="#" class="hover:text-blue-200 transition text-sm sm:text-base">Terms of Service</a>
+                <a href="#" class="hover:text-blue-200 transition text-sm sm:text-base">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Update cart display
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            cartItems.innerHTML = '';
+            let total = 0;
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-center text-gray-600">Your cart is empty.</p>';
+            } else {
+                cart.forEach((book, index) => {
+                    total += book.price;
+                    cartItems.innerHTML += `
+                        <div class="bg-white rounded-lg shadow-lg p-4 flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold text-sm sm:text-base truncate">${book.title}</p>
+                                <p class="text-gray-600 text-xs sm:text-sm">${book.author}</p>
+                            </div>
+                            <div class="flex items-center space-x-2 sm:space-x-4">
+                                <p class="text-sm sm:text-base">$${book.price.toFixed(2)}</p>
+                                <button onclick="removeFromCart(${index})" class="text-red-600 hover:text-red-800 text-xs sm:text-sm">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        // Remove from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        // Clear cart
+        document.getElementById('clear-cart').addEventListener('click', function() {
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        });
+
+        // Initial cart update
+        updateCart();
+    </script>
+</body>
+</html>
