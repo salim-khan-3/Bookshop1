@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookHaven</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #book-list {
+            min-height: 400px; /* Minimum height to prevent layout shift */
+            transition: opacity 0.3s ease; /* Smooth fade-in */
+        }
+        #book-list.loading {
+            opacity: 0; /* Fade out during loading */
+        }
+        #book-list.loaded {
+            opacity: 1; /* Fade in when loaded */
+        }
+        .book-card {
+            min-height: 300px; /* Ensure consistent card height */
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-b from-gray-100 to-gray-300 font-sans">
     <!-- Header -->
@@ -19,7 +34,7 @@
             </nav>
             <div class="flex items-center space-x-2">
                 <div class="relative">
-                    <input type="text" id="search" placeholder="Search..." class="hidden p-2 md:block rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-300 w-32 sm:w-40 md:w-64 text-sm">
+                    <input type="text" id="search" placeholder="Search..." class="p-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-300 w-32 sm:w-40 md:w-64 text-sm">
                 </div>
                 <a href="cart.html" id="cart-btn" class="relative group p-2">
                     <svg class="w-5 h-5 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,8 +84,8 @@
     <section id="books" class="py-12">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8">Our Collection</h2>
-            <div id="loading" class="hidden text-center">
-                <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <div id="loading" class="hidden text-center min-h-[400px] flex items-center justify-center">
+                <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -108,13 +123,14 @@
         function displayBooks(bookArray) {
             const bookList = document.getElementById('book-list');
             const loading = document.getElementById('loading');
+            bookList.classList.add('loading');
             bookList.innerHTML = '';
             loading.classList.remove('hidden');
             setTimeout(() => {
                 loading.classList.add('hidden');
                 bookArray.forEach(book => {
                     const bookCard = `
-                        <div class="bg-white rounded-lg shadow-lg p-4 transform hover:scale-105 transition">
+                        <div class="book-card bg-white rounded-lg shadow-lg p-4 transform hover:scale-105 transition">
                             <img src="${book.image}" alt="${book.title}" class="w-full h-40 sm:h-48 object-cover rounded-md">
                             <h3 class="text-base sm:text-lg font-bold mt-2 truncate">${book.title}</h3>
                             <p class="text-gray-600 text-sm sm:text-base">${book.author}</p>
@@ -126,6 +142,8 @@
                     `;
                     bookList.innerHTML += bookCard;
                 });
+                bookList.classList.remove('loading');
+                bookList.classList.add('loaded');
             }, 500);
         }
 

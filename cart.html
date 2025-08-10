@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart - BookHaven</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #cart-items {
+            min-height: 200px; /* Minimum height to prevent layout shift */
+            transition: opacity 0.3s ease; /* Smooth fade-in */
+        }
+        #cart-items.loading {
+            opacity: 0; /* Fade out during loading */
+        }
+        #cart-items.loaded {
+            opacity: 1; /* Fade in when loaded */
+        }
+        .cart-item {
+            min-height: 80px; /* Ensure consistent item height */
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-b from-gray-100 to-gray-300 font-sans">
     <!-- Header -->
@@ -85,6 +100,7 @@
         function updateCart() {
             const cartItems = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total');
+            cartItems.classList.add('loading');
             cartItems.innerHTML = '';
             let total = 0;
             if (cart.length === 0) {
@@ -93,7 +109,7 @@
                 cart.forEach((book, index) => {
                     total += book.price;
                     cartItems.innerHTML += `
-                        <div class="bg-white rounded-lg shadow-lg p-4 flex justify-between items-center">
+                        <div class="cart-item bg-white rounded-lg shadow-lg p-4 flex justify-between items-center">
                             <div>
                                 <p class="font-semibold text-sm sm:text-base truncate">${book.title}</p>
                                 <p class="text-gray-600 text-xs sm:text-sm">${book.author}</p>
@@ -107,6 +123,8 @@
                 });
             }
             cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+            cartItems.classList.remove('loading');
+            cartItems.classList.add('loaded');
         }
 
         // Remove from cart
