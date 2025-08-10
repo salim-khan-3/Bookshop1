@@ -40,6 +40,32 @@
         </div>
     </section>
 
+    <!-- Payment Section -->
+    <section class="py-12 bg-white shadow-sm">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8">Payment Method</h2>
+            <div class="max-w-md mx-auto">
+                <div class="mb-4">
+                    <label for="payment-method" class="block text-sm sm:text-base font-medium text-gray-700">Select Payment Method</label>
+                    <select id="payment-method" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        <option value="bKash">bKash</option>
+                        <option value="Nagad">Nagad</option>
+                        <option value="Rocket">Rocket</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="mobile-number" class="block text-sm sm:text-base font-medium text-gray-700">Mobile Number</label>
+                    <input type="text" id="mobile-number" placeholder="Enter mobile number" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-300">
+                </div>
+                <div class="mb-4">
+                    <label for="transaction-id" class="block text-sm sm:text-base font-medium text-gray-700">Transaction ID</label>
+                    <input type="text" id="transaction-id" placeholder="Enter transaction ID" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-300">
+                </div>
+                <button id="checkout-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full text-sm sm:text-base">Complete Checkout</button>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-blue-700 text-white py-8">
         <div class="container mx-auto text-center px-4">
@@ -62,7 +88,7 @@
             cartItems.innerHTML = '';
             let total = 0;
             if (cart.length === 0) {
-                cartItems.innerHTML = '<p class="text-center text-gray-600">Your cart is empty.</p>';
+                cartItems.innerHTML = '<p class="text-center text-gray-600 text-sm sm:text-base">Your cart is empty.</p>';
             } else {
                 cart.forEach((book, index) => {
                     total += book.price;
@@ -95,6 +121,30 @@
             cart = [];
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCart();
+        });
+
+        // Checkout functionality
+        document.getElementById('checkout-btn').addEventListener('click', function() {
+            const paymentMethod = document.getElementById('payment-method').value;
+            const mobileNumber = document.getElementById('mobile-number').value;
+            const transactionId = document.getElementById('transaction-id').value;
+
+            if (!paymentMethod || !mobileNumber || !transactionId) {
+                alert('Please fill in all payment details.');
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert('Your cart is empty. Add items to proceed with checkout.');
+                return;
+            }
+
+            alert(`Payment submitted via ${paymentMethod}!\nMobile: ${mobileNumber}\nTransaction ID: ${transactionId}\nThank you for your purchase!`);
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+            document.getElementById('mobile-number').value = '';
+            document.getElementById('transaction-id').value = '';
         });
 
         // Initial cart update
